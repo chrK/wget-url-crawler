@@ -1,0 +1,1 @@
+A very simple url-crawler for one domain based on wget and producing a csv and xlsx with url, file-extension and url segments.

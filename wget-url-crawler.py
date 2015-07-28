@@ -11,14 +11,14 @@ def main(argv):
         exit()
 
     domain_name = argv[1]
-    os.system('wget -r %s' % argv[1])
+    #os.system('wget -r %s' % argv[1])
 
     # Set the directory you want to start from
     root_dir = os.getcwd()
     domain_dir = os.path.join(root_dir, domain_name)
 
     # Get length of rootDir
-    base_path_length = len(root_dir)
+    base_path_length = len(os.path.join(root_dir, domain_name))
 
     raw_url_list = []
     for dir_name, subdir_list, file_list in os.walk(domain_dir):
@@ -40,18 +40,15 @@ def main(argv):
         # Just the complete url
         url.append(raw_url)
 
-        # Filetype is next
-        file_type = raw_url.split('.')[1:]
-        if len(file_type) > 0:
-            file_type = file_type[0]
-        else:
-            file_type = ''
-        url.append(file_type)
+        # File extension is next
+        filename, file_extension = os.path.splitext(raw_url)
+        url.append(file_extension)
 
         # The url segments
         raw_url_segments = raw_url.split('/')
+
         # Clean empty first segments
-        if not raw_url_segments[0]:
+        if raw_url_segments[0] == '':
             del raw_url_segments[0]
 
         segment_count = 1
@@ -62,8 +59,6 @@ def main(argv):
             segment_count += 1
 
         url_list.append(url)
-
-    print(max_segments)
 
     # Create CSV
     csv_file_name = os.path.join(root_dir, ('%s_urls.csv' % domain_name))
@@ -89,7 +84,7 @@ def main(argv):
         row += 1
         col = 0
         for column in url:
-            worksheet.write(row, col, column)
+            worksheet.write(row, col, column.decode('utf-8'))
             col += 1
 
     # Some basic formatting
@@ -100,7 +95,7 @@ def main(argv):
 
     workbook.close()
 
-    print(len(url_list))
+    print('Indexed unique urls: ' + str(len(url_list)))
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))
