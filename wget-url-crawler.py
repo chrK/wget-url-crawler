@@ -11,7 +11,7 @@ def main(argv):
         exit()
 
     domain_name = argv[1]
-    #os.system('wget -r %s' % argv[1])
+    os.system('wget -r %s' % argv[1])
 
     # Set the directory you want to start from
     root_dir = os.getcwd()
